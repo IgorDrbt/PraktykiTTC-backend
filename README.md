@@ -2,9 +2,10 @@
 
 (pobierać tylko w folderze: cd \PraktykiTTC-backend)
 
-konsola: python -m venv .venv
+instalujesz wirtualke (konsola): python -m venv .venv
 
 aktywacja środowiska (konsola): .venv\Scripts\activate
+alt: .venv\Scripts\Activate.ps1
 
 instalacja pakietów dla python (konsola): python -m pip install django djangorestframework
 
