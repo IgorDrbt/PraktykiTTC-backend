@@ -2,9 +2,10 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
+# Model dla biurka
 class Desk(models.Model):
-    number = models.IntegerField(unique=True)
-    is_available = models.BooleanField(default=True)
+    number = models.IntegerField(unique=True)  # Unikalny numer biurka
+    is_available = models.BooleanField(default=True)  # Informacja, czy biurko jest dostępne
 
     def __str__(self):
         return f"Desk {self.number} - {'Available' if self.is_available else 'Occupied'}"
