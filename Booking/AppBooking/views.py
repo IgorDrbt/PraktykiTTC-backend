@@ -1,7 +1,6 @@
 from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
-<<<<<<< HEAD
 from rest_framework import status, serializers
 from .models import Desk, Worker, Reservation
 from datetime import date
@@ -47,11 +46,6 @@ def desk_availability_api(request):
         'date': selected_date.isoformat(),
         'desks': result
     })
-=======
-from rest_framework import status
-from .serializers import UserRegistrationSerializer, ReservationSerializer
-from .models import Desk, Worker, Reservation
->>>>>>> 7691d8a517102c79b92ed30fc90115c8cd973587
 
 class ListaKlientow(APIView):
     def get(self, request):
