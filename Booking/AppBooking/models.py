@@ -36,9 +36,13 @@ class Reservation(models.Model):
     id_number_table = models.AutoField(primary_key=True)
     reservation_time = models.DateField()
     id_worker = models.ForeignKey(Worker, on_delete=models.SET_NULL, null=True)
+    desk = models.ForeignKey(Desk, on_delete=models.SET_NULL, null=True)
 
     def clean(self):
         if self.reservation_time < timezone.now().date():
             raise ValidationError("Nie cofamy sie w czasie")
         if Reservation.objects.filter(id_worker=self.id_worker, reservation_time=self.reservation_time).exclude(pk=self.pk).exists():
             raise ValidationError("Pracownik jest już zarejestrowany")
+        if Reservation.objects.filter(desk=self.desk, reservation_time=self.reservation_time).exclude(pk=self.pk).exists():
+            raise ValidationError("to biurko jest już zajęte")
+        
