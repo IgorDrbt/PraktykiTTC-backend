@@ -1,8 +1,11 @@
-from django.http import JsonResponse
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, serializers
+from .serializers import UserRegistrationSerializer, ReservationSerializer
 from .models import Desk, Worker, Reservation
+from django.http import JsonResponse
+from rest_framework import status, serializers
 from datetime import date
 
 class DeskSerializer(serializers.ModelSerializer):
@@ -47,11 +50,16 @@ def desk_availability_api(request):
         'desks': result
     })
 
+
 class ListaKlientow(APIView):
+    authentication_classes = [JWTAuthentication]
+    permissions_classes = [IsAuthenticated]
+
     def get(self, request):
         Available_desks = Desk.objects.filter(is_available=True)
         serializer = DeskSerializer(Available_desks, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
     
 class UserRegistrationView(APIView):
     def post(self, request):
@@ -68,6 +76,9 @@ class UserRegistrationView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class DeskReservationView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permissions_classes = [IsAuthenticated]
+
     def post(self, request):
         """
         Tworzenie rezerwacji biurka przez użytkownika.
@@ -81,6 +92,7 @@ class DeskReservationView(APIView):
             }, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 
 class UserRegistrationView(APIView):
     def post(self, request):
@@ -93,12 +105,14 @@ class UserRegistrationView(APIView):
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class DeskReservationView(APIView):
-    def post(self, request):
-        serializer = ReservationSerializer(data=request.data)
-        if serializer.is_valid():
-            reservation = serializer.save()
-            return Response({
-                "message": f"Biurko {reservation.desk.number} zostało zarezerwowane."
-            }, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+
+
+
+
+
+
