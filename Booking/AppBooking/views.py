@@ -7,10 +7,21 @@ from .models import Desk, Reservation
 from django.http import JsonResponse
 from rest_framework import status, serializers
 from datetime import date
+from django.contrib.auth.models import User
 
 class DeskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Desk
+        fields = '__all__'
+
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+
+class ReservationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reservation
         fields = '__all__'
 
 def desk_availability_api(request):
