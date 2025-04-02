@@ -156,7 +156,7 @@ CORS_ALLOW_METHODS = [
 
 CORS_ALLOWED_ORIGINS = [
     "https://example.com",  
-    "https://localhost:3000",  
+    "https://localhost:8000",  
 ]
 
 CORS_ALLOW_CREDENTIALS = True 
