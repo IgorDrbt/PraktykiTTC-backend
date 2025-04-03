@@ -3,19 +3,15 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import UserRegistrationSerializer, ReservationSerializer
-from .models import Desk, Worker, Reservation
+from .models import Desk, Reservation
 from django.http import JsonResponse
 from rest_framework import status, serializers
 from datetime import date
+from django.contrib.auth.models import User
 
 class DeskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Desk
-        fields = '__all__'
-
-class UserRegistrationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Worker
         fields = '__all__'
 
 class ReservationSerializer(serializers.ModelSerializer):

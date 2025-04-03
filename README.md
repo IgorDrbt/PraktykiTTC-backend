@@ -10,7 +10,7 @@
 
 alternatywnie: .venv\Scripts\Activate.ps1
 
-5 instalacja pakietów dla python (konsola): python -m pip install django djangorestframework djangorestframework-simplejwt
+5 instalacja pakietów dla python (konsola): python -m pip install django djangorestframework djangorestframework-simplejwt django-cors-headers
 
 6 (opcjonalne) jesli chce pip sie aktualizowac z np(24.0.0 do 25.0.1): python.exe -m pip install --upgrade pip
 
