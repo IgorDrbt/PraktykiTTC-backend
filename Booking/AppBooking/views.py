@@ -6,15 +6,14 @@ from .serializers import UserRegistrationSerializer, ReservationSerializer, Desk
 from django.http import JsonResponse
 from rest_framework import status, viewsets, generics
 from datetime import date
-from .models import Desk, Worker, Reservation, Login
+from .models import Desk, Worker, Reservation
 from django.contrib.auth.hashers import check_password
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 
 class LoginView(generics.GenericAPIView):
-    permission_classes = []  # Brak wymagań dotyczących uprawnień w przypadku logowania
-    serializer_class = LoginAdminSerializer  # Serializator do logowania
+    permission_classes = []  
+    serializer_class = LoginAdminSerializer  
 
     def post(self, request, *args, **kwargs):
         login = request.data.get('login')
@@ -26,11 +25,9 @@ class LoginView(generics.GenericAPIView):
         print(f"Attempting login with: {login}, {password}")
 
         try:
-            # Szukamy użytkownika w tabeli auth_user
             user = User.objects.get(username=login)
             print(f"Found user: {user}")
 
-            # Sprawdzamy hasło
             if not check_password(password, user.password):
                 print("Invalid password")
                 return Response({"error": "Invalid credentials - incorrect password"}, status=status.HTTP_401_UNAUTHORIZED)
@@ -87,7 +84,6 @@ class UserRegistrationView(APIView):
             username = serializer.validated_data['username']
             password = serializer.validated_data['password']
 
-            # Tworzenie użytkownika w tabeli auth_user
             user = User.objects.create_user(username=username, password=password)
 
             return Response(
