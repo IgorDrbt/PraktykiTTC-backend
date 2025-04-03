@@ -1,8 +1,29 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Reservation, Desk, Worker
+from .models import Desk, Worker, Reservation, Login
+from django.contrib.auth.hashers import make_password
 
-class  UserRegistrationSerializer(serializers.ModelSerializer):
+class DeskAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Desk
+        fields = '__all__'
+
+class WorkerAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Worker
+        fields = '__all__'
+
+class ReservationAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reservation
+        fields = '__all__'
+
+class LoginAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Login
+        fields = ['login', 'passwd']
+
+class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, style={'input_type': 'password'})
     password_confirm = serializers.CharField(write_only=True, style={'input_type': 'password'})
 
@@ -22,14 +43,11 @@ class  UserRegistrationSerializer(serializers.ModelSerializer):
         """
         Create a new user with the validated data.
         """
-        try:
-            user = User.objects.create_user(
-                username=validated_data['username'],
-                email=validated_data['email'],
-                password=validated_data['password']
-            )
-        except Exception as e:
-            raise serializers.ValidationError(f"Error creating user: {str(e)}")
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password'],
+        )
         return user
 
 class ReservationSerializer(serializers.ModelSerializer):
@@ -79,3 +97,8 @@ class ReservationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Biurko o podanym numerze nie istnieje.")
         except Worker.DoesNotExist:
             raise serializers.ValidationError("Pracownik o podanym ID nie istnieje.")
+
+class DeskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Desk
+        fields = ['id', 'number', 'is_available']  
