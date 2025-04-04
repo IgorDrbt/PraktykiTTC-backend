@@ -3,12 +3,15 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password
 
-class Desk(models.Model):
-    number = models.AutoField(primary_key=True)  
-    is_available = models.BooleanField(default=True)
+from django.db import models
 
+class Desk(models.Model):
+    name = models.CharField(max_length=100)
+    location = models.CharField(max_length=100)
+    
     def __str__(self):
-        return f"Desk {self.number} - {'Available' if self.is_available else 'Occupied'}"
+        return self.name
+
 
 
 class Login(models.Model):
@@ -22,7 +25,7 @@ class Login(models.Model):
 
     def save(self, *args, **kwargs):
         if self.passwd:  
-            self.passwd = make_password(self.passwd)  # Hash password before saving
+            self.passwd = make_password(self.passwd)
         super().save(*args, **kwargs)
 
 
