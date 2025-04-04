@@ -37,7 +37,6 @@ class LoginView(generics.GenericAPIView):
         except User.DoesNotExist:
             return Response({"error": "Invalid credentials - no such user"}, status=status.HTTP_401_UNAUTHORIZED)
 
-        # Generowanie tokenu JWT
         refresh = RefreshToken.for_user(user)
         access_token = refresh.access_token
 

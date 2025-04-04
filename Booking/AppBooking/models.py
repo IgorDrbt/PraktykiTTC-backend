@@ -2,10 +2,9 @@ from django.db import IntegrityError, models
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password
-from django.contrib import admin
 
 class Desk(models.Model):
-    number = models.AutoField(primary_key=True)  # Auto increment for unique desk numbers
+    number = models.AutoField(primary_key=True)  
     is_available = models.BooleanField(default=True)
 
     def __str__(self):
@@ -22,7 +21,7 @@ class Login(models.Model):
             raise ValidationError("Hasło musi mieć co najmniej 8 znaków i zawierać cyfrę")
 
     def save(self, *args, **kwargs):
-        if self.passwd:  # Check if password is set
+        if self.passwd:  
             self.passwd = make_password(self.passwd)  # Hash password before saving
         super().save(*args, **kwargs)
 

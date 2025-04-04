@@ -5,9 +5,8 @@ from .views import (
     DeskReservationView,
     desk_availability_api
 )
-from rest_framework.authtoken.views import obtain_auth_token
 from .views import ListaKlientow, UserRegistrationView, DeskReservationView
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import DeskAdminViewSet, WorkerAdminViewSet, ReservationAdminViewSet
