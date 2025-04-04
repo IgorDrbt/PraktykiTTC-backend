@@ -64,8 +64,11 @@ W wyborze zamiast none dajesz raw i po prawej zamiast text dajesz JSON
 Po tym ctrl-c ctrl-v
 
 {
+
     "login": "?",
+
     "passwd": "?"
+
 }
 
 i SEND
@@ -73,8 +76,64 @@ i SEND
 Wynik: 
 
 {
+
     "refresh": "---------------------------------------------------------------",
+
     "access": "---------------------------------------------------------------"
+
 }
 
 tak
+========= Rejestracja biurka w postamnie =======
+
+http://127.0.0.1:8000/admin/AppBooking/
+
+W admin panelu musi byc stowrzonny login = logowanie odbywa sie poprzez rejestracje i logowanie tak jak na gorze, po tym gdy pojawi sie "login object(x)" uzywamy go do rejestracji workera, potrzebny jest login object jako id_login i imie i nazwisko, po tym mozemy rezerwowac biurko.
+
+http://127.0.0.1:8000/api/reserve/
+
+Do rejestracji - by stworzyc rezerwacje w postmanie potrzeba dwoch reczy, w tabeli Authorization wybieramy Bearer Token, i wklejamy na nasz access token z logina, i Body - raw - JSON
+
+{
+
+    "desk_number": "4",
+
+    "id_worker": "2",
+
+    "reservation_time": "2025-04-05"
+
+}
+
+desk_number - numer biurka, w bazie danych jest on w AppBooking_desk = number
+
+id_worker - jest pokazany w adminie jako worker,
+object(x), w bazie w tabeli AppBooking_worker jako id_worker
+
+reservation_time - data dzisiejsza idac jako RRRR-MM-DD
+
+============ ListaKlientow aka lista biurek =============
+
+http://127.0.0.1:8000/api/ListaKlientow/
+
+tak samo jak rezerwacja tak i z lista biurek authorizacja i token, ale tym razem dajemy Body - none
+
+wynik: 
+
+[
+    {
+        "number": 1,
+        "is_available": true
+    },
+    {
+        "number": 4,
+        "is_available": true
+    }
+]
+
+pokazuje dostepne biurka
+
+============ desk-availability ==========
+
+http://127.0.0.1:8000/api/desk-availability/
+
+czarne tlo i dane 

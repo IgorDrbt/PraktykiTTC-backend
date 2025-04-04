@@ -1,11 +1,11 @@
 from .views import (
-    ListaKlientow,
+    ListaBiurek,
     LoginView,
     UserRegistrationView,
     DeskReservationView,
     desk_availability_api
 )
-from .views import ListaKlientow, UserRegistrationView, DeskReservationView
+from .views import ListaBiurek, UserRegistrationView, DeskReservationView
 from rest_framework_simplejwt.views import TokenRefreshView
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
@@ -18,7 +18,7 @@ router.register(r'workers', WorkerAdminViewSet)
 router.register(r'reservations', ReservationAdminViewSet)
 
 urlpatterns = [
-    path('ListaKlientow/', ListaKlientow.as_view(), name='lista_klientow'),
+    path('ListaBiurek/', ListaBiurek.as_view(), name='lista_biurek'),
     path('login/', LoginView.as_view(), name='login'),
     path('register/', UserRegistrationView.as_view(), name='register'),
     path('reserve/', DeskReservationView.as_view(), name='reserve_desk'),
