@@ -1,13 +1,15 @@
-from django.db import models
+from django.db import IntegrityError, models
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.contrib.auth.hashers import make_password
 
 class Desk(models.Model):
-    number = models.IntegerField(unique=True)
+    number = models.AutoField(primary_key=True)  
     is_available = models.BooleanField(default=True)
 
     def __str__(self):
         return f"Desk {self.number} - {'Available' if self.is_available else 'Occupied'}"
+
 
 class Login(models.Model):
     id_login = models.AutoField(primary_key=True)
@@ -18,6 +20,10 @@ class Login(models.Model):
         if len(self.passwd) < 8 or not any(c.isdigit() for c in self.passwd):
             raise ValidationError("Hasło musi mieć co najmniej 8 znaków i zawierać cyfrę")
 
+    def save(self, *args, **kwargs):
+        if self.passwd:  
+            self.passwd = make_password(self.passwd)
+        super().save(*args, **kwargs)
 
 
 class Worker(models.Model):
@@ -31,7 +37,6 @@ class Worker(models.Model):
             raise ValidationError("Imię i nazwisko mają zawierać litery")
 
 
-
 class Reservation(models.Model):
     id_number_table = models.AutoField(primary_key=True)
     reservation_time = models.DateField()
@@ -40,9 +45,16 @@ class Reservation(models.Model):
 
     def clean(self):
         if self.reservation_time < timezone.now().date():
-            raise ValidationError("Nie cofamy sie w czasie")
+            raise ValidationError("Nie cofamy się w czasie")
+        
         if Reservation.objects.filter(id_worker=self.id_worker, reservation_time=self.reservation_time).exclude(pk=self.pk).exists():
             raise ValidationError("Pracownik jest już zarejestrowany")
+
         if Reservation.objects.filter(desk=self.desk, reservation_time=self.reservation_time).exclude(pk=self.pk).exists():
-            raise ValidationError("to biurko jest już zajęte")
-        
+            raise ValidationError("To biurko jest już zajęte")
+    
+    def save(self, *args, **kwargs):
+        try:
+            super().save(*args, **kwargs)
+        except IntegrityError:
+            raise ValidationError("Nie udało się zapisać rezerwacji, spróbuj ponownie.")
