@@ -75,7 +75,7 @@ def desk_availability_api(request):
     for desk in desks:
         result.append({
             'desk_number': desk.number,
-            'reserved': desk.id in reserved_desks
+            'reserved': desk.number in reserved_desks
         })
 
     paginator = Paginator(result, 5)
