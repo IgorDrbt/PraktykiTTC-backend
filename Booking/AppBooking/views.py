@@ -56,7 +56,7 @@ def desk_availability_api(request):
         try:
             selected_date = date.fromisoformat(selected_date)
         except ValueError:
-            return JsonResponse({'error': 'Zły format daty. Użyj RRRR-MM-DD'}, status=400)
+            return JsonResponse({'error': 'Zly format daty. Uzyj RRRR-MM-DD'}, status=400)
     else:
         selected_date = date.today()
 

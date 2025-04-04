@@ -100,4 +100,4 @@ class ReservationSerializer(serializers.ModelSerializer):
 class DeskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Desk
-        fields = ['id', 'number', 'is_available']  
+        fields = ['number', 'is_available']  
