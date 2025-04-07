@@ -1,5 +1,6 @@
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import UserRegistrationSerializer, ReservationSerializer, DeskSerializer, DeskAdminSerializer, WorkerAdminSerializer, ReservationAdminSerializer, LoginAdminSerializer
@@ -90,9 +91,6 @@ def desk_availability_api(request):
 
 class UserRegistrationView(APIView):
     def post(self, request):
-        """
-        Rejestracja nowego użytkownika za pomocą API.
-        """
         serializer = UserRegistrationSerializer(data=request.data)
 
         if serializer.is_valid():
@@ -108,42 +106,29 @@ class UserRegistrationView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-
 class DeskAdminViewSet(viewsets.ModelViewSet):
-    """
-    Admin view for managing desks (CRUD operations).
-    """
     queryset = Desk.objects.all()
     serializer_class = DeskAdminSerializer
     permission_classes = [IsAdminUser]
 
 class WorkerAdminViewSet(viewsets.ModelViewSet):
-    """
-    Admin view for managing workers (CRUD operations).
-    """
     queryset = Worker.objects.all()
     serializer_class = WorkerAdminSerializer
     permission_classes = [IsAdminUser]
 
 class ReservationAdminViewSet(viewsets.ModelViewSet):
-    """
-    Admin view for managing reservations (CRUD operations).
-    """
     queryset = Reservation.objects.all()
     serializer_class = ReservationAdminSerializer
     permission_classes = [IsAdminUser]
 
 class ListaBiurek(APIView):
-    authentication_classes = [JWTAuthentication]  
+    authentication_classes = [SessionAuthentication, JWTAuthentication]
     permission_classes = [IsAuthenticated]  
 
     def get(self, request):
         try:
             available_desks = Desk.objects.filter(is_available=True)
-            
             serializer = DeskSerializer(available_desks, many=True)
-            
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response(
@@ -152,13 +137,10 @@ class ListaBiurek(APIView):
             )
 
 class DeskReservationView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [SessionAuthentication, JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        """
-        Tworzenie rezerwacji biurka przez użytkownika.
-        """
         try:
             serializer = ReservationSerializer(data=request.data)
 
@@ -167,16 +149,16 @@ class DeskReservationView(APIView):
                 return Response({
                     "message": f"Biurko {reservation.desk.number} zostało pomyślnie zarezerwowane przez {reservation.worker.name_worker} {reservation.worker.surname_worker}."
                 }, status=status.HTTP_201_CREATED)
-        
+       
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response(
-            {"error": "Wystąpił błąd podczas tworzenia rezerwacji.", "details": str(e)},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
-        
+                {"error": "Wystąpił błąd podczas tworzenia rezerwacji.", "details": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+       
 class ReservationDateFilterAPIView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [SessionAuthentication, JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -192,3 +174,5 @@ class ReservationDateFilterAPIView(APIView):
 
         serializer = ReservationSerializer(reservations, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
