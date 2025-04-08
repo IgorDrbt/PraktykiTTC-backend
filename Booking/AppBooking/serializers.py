@@ -51,19 +51,19 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 class ReservationSerializer(serializers.ModelSerializer):
     desk_number = serializers.IntegerField()  # Numer biurka
-    id_worker = serializers.PrimaryKeyRelatedField(queryset=Worker.objects.all())  # ForeignKey zamiast IntegerField
+    id_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())  # ForeignKey to User model
     reservation_time = serializers.DateTimeField()  # Czas rezerwacji
 
     class Meta:
         model = Reservation
-        fields = ['desk_number', 'id_worker', 'reservation_time']
+        fields = ['desk_number', 'id_user', 'reservation_time']
 
     def create(self, validated_data):
         """
         Tworzenie rezerwacji biurka.
         """
         desk_number = validated_data['desk_number']
-        id_worker = validated_data['id_worker']
+        id_user = validated_data['id_user']
         reservation_time = validated_data['reservation_time']
 
         try:
@@ -71,16 +71,18 @@ class ReservationSerializer(serializers.ModelSerializer):
             if not desk.is_available:
                 raise serializers.ValidationError(f"Biurko {desk_number} jest już zarezerwowane.")
 
-            existing_reservation = Reservation.objects.filter(id_worker=id_worker, reservation_time=reservation_time)
+            existing_reservation = Reservation.objects.filter(id_user=id_user, reservation_time=reservation_time)
             if existing_reservation.exists():
-                raise serializers.ValidationError(f"Pracownik {id_worker.name_worker} {id_worker.surname_worker} ma już rezerwację na ten czas.")
+                raise serializers.ValidationError(f"Użytkownik {id_user.username} ma już rezerwację na ten czas.")
 
+            # Create the reservation
             reservation = Reservation.objects.create(
                 reservation_time=reservation_time,
                 desk=desk,
-                id_worker=id_worker  
+                id_user=id_user  # Changed to use id_user (User model)
             )
 
+            # Mark the desk as unavailable
             desk.is_available = False
             desk.save()
 
@@ -88,10 +90,11 @@ class ReservationSerializer(serializers.ModelSerializer):
 
         except Desk.DoesNotExist:
             raise serializers.ValidationError("Biurko o podanym numerze nie istnieje.")
-        except Worker.DoesNotExist:
-            raise serializers.ValidationError("Pracownik o podanym ID nie istnieje.")
+        except User.DoesNotExist:
+            raise serializers.ValidationError("Użytkownik o podanym ID nie istnieje.")
         except serializers.ValidationError as e:
             raise serializers.ValidationError(str(e))
+
 
 
 class DeskSerializer(serializers.ModelSerializer):

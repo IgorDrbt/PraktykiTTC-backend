@@ -14,6 +14,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.core.paginator import Paginator
 
+
 class LoginView(generics.GenericAPIView):
     permission_classes = []  
     serializer_class = LoginAdminSerializer  
@@ -146,9 +147,11 @@ class DeskReservationView(APIView):
 
             if serializer.is_valid():
                 reservation = serializer.save()  
-                return Response({
-                    "message": f"Biurko {reservation.desk.number} zostało pomyślnie zarezerwowane przez {reservation.worker.name_worker} {reservation.worker.surname_worker}."
-                }, status=status.HTTP_201_CREATED)
+                
+                user = reservation.id_user
+                message = f"Biurko {reservation.desk.number} zostało pomyślnie zarezerwowane przez {user.username}."
+
+                return Response({"message": message}, status=status.HTTP_201_CREATED)
        
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:

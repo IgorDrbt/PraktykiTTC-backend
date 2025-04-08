@@ -26,4 +26,4 @@ class WorkerAdmin(admin.ModelAdmin):
 
 @admin.register(Reservation)
 class ReservationAdmin(admin.ModelAdmin):
-    list_display = ('reservation_time', 'id_worker', 'desk')
+    list_display = ('reservation_time', 'id_user', 'desk')
